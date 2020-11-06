@@ -15,21 +15,18 @@ module.exports = (router) => {
         })
     });
 
-    // TODO FIX FIND ONE SEARCH
-    // get product by id
-    routes.get("/:id", async (req, res) => {
-        let { product_id } = req.body
+    routes.get("/one", async (req, res) => {
 
-        const product = await OurProducts.findOne({product_id})
+        const product = await OurProducts.find({}).limit(1)
 
         if(!product)
             return res.status(404).json({
-                message: "Товар не найден",
+                message: "Товаров не найдено",
                 success: false,
             })
 
         res.status(200).json({
-            product,
+            product: product[0],
             success: true
         })
     });
@@ -56,7 +53,6 @@ module.exports = (router) => {
             deletedCount: result.deletedCount
         })
     });
-
 
     // TODO dodelat
 

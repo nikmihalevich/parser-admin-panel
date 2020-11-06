@@ -2,7 +2,7 @@ const mysql = require('mysql2')
 const OurProducts = require('../models/OurProductsModel')
 
 const getOurProducts = () => {
-    const DB_PREFIX = 'oc_'
+    const DB_PREFIX = process.env.MYSQLDBPREFIX
 
     let products
 
@@ -42,10 +42,10 @@ const getOurProducts = () => {
 
 // create the connection to database
     const MYSQLconnection = mysql.createConnection({
-        host: 'localhost',
-        user: 'root',
-        password: 'root',
-        database: 'opencart'
+        host: process.env.MYSQLHOST,
+        user: process.env.MYSQLUSER,
+        password: process.env.MYSQLPASS,
+        database: process.env.MYSQLDB
     });
 
     MYSQLconnection.connect((err) => {
@@ -78,7 +78,7 @@ const getOurProducts = () => {
             console.log(err)
         })
 
-    MYSQLconnection.promise().query("SELECT product_id, weight, weight_class_id FROM " + DB_PREFIX + "product")
+    MYSQLconnection.promise().query("SELECT product_id, price, weight, weight_class_id FROM " + DB_PREFIX + "product")
         .then((res) => {
             res[0].forEach((value, i) => {
                 let params = {
@@ -88,6 +88,7 @@ const getOurProducts = () => {
                 }
                 productsCharacteristic.push({
                     product_id: value.product_id,
+                    price: parseFloat(value.price).toFixed(2),
                     params: params
                 })
             })

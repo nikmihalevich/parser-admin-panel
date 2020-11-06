@@ -8,6 +8,9 @@ const ourProductsSchema = new Schema({
     name: {
         type: String
     },
+    price: {
+        type: Number
+    },
     params: {
         weight: {
             type: String

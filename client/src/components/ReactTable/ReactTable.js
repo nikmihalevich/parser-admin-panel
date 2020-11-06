@@ -14,7 +14,7 @@ import {matchSorter} from "match-sorter";
 import Select from "react-select";
 
 // reactstrap components
-import { Container, Row, Col, FormGroup, Input } from "reactstrap";
+import { Container, Row, Col, FormGroup, Input, Button } from "reactstrap";
 
 // Define a default UI for filtering
 function DefaultColumnFilter({
@@ -25,7 +25,7 @@ function DefaultColumnFilter({
   return (
     <FormGroup>
       <Input
-        placeholder={`Search ${count} records...`}
+        placeholder={`Поиск...`}
         type="text"
         onChange={(e) => {
           setFilter(e.target.value || undefined); // Set undefined to remove the filter entirely
@@ -122,70 +122,63 @@ function Table({ columns, data }) {
       <div className="ReactTable -striped -highlight primary-pagination">
         <div className="pagination-top">
           <div className="-pagination">
-            <div className="-previous">
-              <button
-                type="button"
+            <Col sm="3" xs="12" style={{ display: "flex", justifyContent: "center"}}>
+              <Button
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
                 className="-btn"
               >
-                Previous
-              </button>
-            </div>
-            <div className="-center">
-              <Container>
-                <Row className="justify-content-center">
-                  <Col md="4" sm="6" xs="12">
-                    <Select
-                      className="react-select primary"
-                      classNamePrefix="react-select"
-                      name="pageSelect"
-                      value={pageSelect}
-                      onChange={(value) => {
-                        gotoPage(value.value);
-                        handlePageSelect(value);
-                      }}
-                      options={pageSelectData.map((prop, key) => {
-                        return {
-                          value: key,
-                          label: "Page " + (key + 1),
-                        };
-                      })}
-                      placeholder="Choose Page"
-                    />
-                  </Col>
-                  <Col md="4" sm="6" xs="12">
-                    <Select
-                      className="react-select primary"
-                      classNamePrefix="react-select"
-                      name="numberOfRows"
-                      value={numberOfRows}
-                      onChange={(value) => {
-                        setPageSize(value.value);
-                        setNumberOfRows(value);
-                      }}
-                      options={numberOfRowsData.map((prop) => {
-                        return {
-                          value: prop,
-                          label: prop + " rows",
-                        };
-                      })}
-                      placeholder="Choose Rows"
-                    />
-                  </Col>
-                </Row>
-              </Container>
-            </div>
-            <div className="-next">
-              <button
-                type="button"
+                Пред
+              </Button>
+            </Col>
+            <Col sm="3" xs="12">
+              <Select
+                className="react-select primary"
+                classNamePrefix="react-select"
+                name="pageSelect"
+                value={pageSelect}
+                onChange={(value) => {
+                  gotoPage(value.value);
+                  handlePageSelect(value);
+                }}
+                options={pageSelectData.map((prop, key) => {
+                  return {
+                    value: key,
+                    label: "Page " + (key + 1),
+                  };
+                })}
+                placeholder="Выберите страницу"
+              />
+            </Col>
+            <Col sm="3" xs="12">
+              <Select
+                className="react-select primary"
+                classNamePrefix="react-select"
+                name="numberOfRows"
+                value={numberOfRows}
+                onChange={(value) => {
+                  setPageSize(value.value);
+                  setNumberOfRows(value);
+                }}
+                options={numberOfRowsData.map((prop) => {
+                  return {
+                    value: prop,
+                    label: prop + " rows",
+                  };
+                })}
+                placeholder="Выберите строки"
+              />
+            </Col>
+
+            <Col sm="3" xs="12" style={{ display: "flex", justifyContent: "center"}}>
+              <Button
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
                 className="-btn"
               >
-                Next
-              </button>
-            </div>
+                След
+              </Button>
+            </Col>
           </div>
         </div>
         <table {...getTableProps()} className="rt-table">
@@ -206,11 +199,12 @@ function Table({ columns, data }) {
                     </div>
                     {/* Render the columns filter UI */}
                     <div>
-                      {headerGroup.headers.length - 1 === key
+                      {headerGroup.headers[key].filterable === false
                         ? null
                         : column.canFilter
                         ? column.render("Filter")
                         : null}
+                        
                     </div>
                   </th>
                 ))}

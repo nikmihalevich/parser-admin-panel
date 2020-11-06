@@ -9,14 +9,14 @@ module.exports = (router) => {
         const user = await User.findOne({ login })
 
         if(!user)
-            return res.json({
-                message: 'Пользователь не найден',
+            return res.status(400).json({
+                login: 'Пользователь не найден',
                 success: false
             })
 
         if(password !== user.password)
-            return res.json({
-                message: "Неверный пароль",
+            return res.status(400).json({
+                password: "Неверный пароль",
                 success: false
             })
 
