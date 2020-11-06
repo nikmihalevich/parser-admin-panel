@@ -1,7 +1,7 @@
 const mongoose = require("mongoose");
 const Schema = mongoose.Schema;
 
-const vprokSchema = new Schema(
+const okeySchema = new Schema(
   {
     product_id: {
       type: Number,
@@ -13,6 +13,6 @@ const vprokSchema = new Schema(
   { timestamps: true }
 );
 
-const Vprok = mongoose.model("vprok", vprokSchema);
+const Okey = mongoose.model("okey", okeySchema);
 
-module.exports = Vprok;
+module.exports = Okey;

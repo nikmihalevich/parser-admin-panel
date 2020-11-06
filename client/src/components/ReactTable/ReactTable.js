@@ -9,7 +9,7 @@ import {
 } from "react-table";
 import classnames from "classnames";
 // A great library for fuzzy filtering/sorting items
-import {matchSorter} from "match-sorter";
+import { matchSorter } from "match-sorter";
 // react plugin used to create DropdownMenu for selecting items
 import Select from "react-select";
 
@@ -115,14 +115,18 @@ function Table({ columns, data }) {
   let pageSelectData = Array.apply(
     null,
     Array(pageOptions.length)
-  ).map(function () {});
+  ).map(function() {});
   let numberOfRowsData = [5, 10, 20, 25, 50, 100];
   return (
     <>
       <div className="ReactTable -striped -highlight primary-pagination">
         <div className="pagination-top">
           <div className="-pagination">
-            <Col sm="3" xs="12" style={{ display: "flex", justifyContent: "center"}}>
+            <Col
+              sm="3"
+              xs="12"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
               <Button
                 onClick={() => previousPage()}
                 disabled={!canPreviousPage}
@@ -170,7 +174,11 @@ function Table({ columns, data }) {
               />
             </Col>
 
-            <Col sm="3" xs="12" style={{ display: "flex", justifyContent: "center"}}>
+            <Col
+              sm="3"
+              xs="12"
+              style={{ display: "flex", justifyContent: "center" }}
+            >
               <Button
                 onClick={() => nextPage()}
                 disabled={!canNextPage}
@@ -204,7 +212,6 @@ function Table({ columns, data }) {
                         : column.canFilter
                         ? column.render("Filter")
                         : null}
-                        
                     </div>
                   </th>
                 ))}
@@ -224,9 +231,25 @@ function Table({ columns, data }) {
                   )}
                 >
                   {row.cells.map((cell) => {
+                    let positivePercentClass =
+                      cell.column.Header === "%"
+                        ? cell.value > 0
+                          ? "color-green"
+                          : ""
+                        : "";
+                    let negativePercentClass =
+                      cell.column.Header === "%"
+                        ? cell.value > 0
+                          ? "color-red"
+                          : ""
+                        : "";
                     return (
-                      <td {...cell.getCellProps()} className="rt-td">
+                      <td
+                        {...cell.getCellProps()}
+                        className={"rt-td" + " " + positivePercentClass}
+                      >
                         {cell.render("Cell")}
+                        {cell.column.Header === "%" ? "%" : ""}
                       </td>
                     );
                   })}

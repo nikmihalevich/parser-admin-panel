@@ -1,7 +1,7 @@
 const OurProducts = require("../models/OurProductsModel");
-const Vprok = require("../models/VprokModel");
+const Okey = require("../models/OkeyModel");
 const User = require("../models/UserModel");
-const vprokParser = require("../core/vprokParser");
+const okeyParser = require("../core/okeyParser");
 const calcAveragePrice = require("../helpers/calcAveragePrice");
 
 module.exports = (router) => {
@@ -9,10 +9,10 @@ module.exports = (router) => {
 
   // get all
   routes.get("/", async (req, res) => {
-    const vprok = await Vprok.find({});
+    const okey = await Okey.find({});
 
     res.status(200).json({
-      products: vprok,
+      products: okey,
       success: true,
     });
   });
@@ -21,7 +21,7 @@ module.exports = (router) => {
   routes.get("/:id", async (req, res) => {
     const { id } = req.body;
 
-    const product = await Vprok.findById(id);
+    const product = await Okey.findById(id);
 
     if (!product)
       return res.status(404).json({
@@ -48,16 +48,16 @@ module.exports = (router) => {
 
     const ourProducts = await OurProducts.find({});
 
-    await Vprok.deleteMany({});
+    await Okey.deleteMany({});
 
-    await vprokParser(ourProducts);
+    await okeyParser(ourProducts);
 
-    const vprokProducts = await Vprok.find({});
+    const okeyProducts = await Okey.find({});
 
-    await calcAveragePrice(Vprok, vprokProducts);
+    await calcAveragePrice(Okey, okeyProducts);
 
     res.status(200).json({
-      message: "Парсинг Перекрестка начат",
+      message: "Парсинг Окея начат",
       success: true,
     });
   });
