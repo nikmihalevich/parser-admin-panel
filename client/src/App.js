@@ -2,10 +2,7 @@ import React, { Component } from "react";
 import { BrowserRouter as Router, Route, Switch } from "react-router-dom";
 
 import { setCurrentUser } from "./actions/authActions";
-import {
-  getDateLastUpdateOurProducts,
-  getShopsData,
-} from "./actions/shopsActions";
+import { getDateLastUpdate, getShopsData } from "./actions/shopsActions";
 import { Provider } from "react-redux";
 import store from "./store";
 
@@ -21,7 +18,7 @@ if (localStorage._id) {
 }
 
 // start actions
-store.dispatch(getDateLastUpdateOurProducts());
+store.dispatch(getDateLastUpdate());
 store.dispatch(getShopsData());
 
 class App extends Component {

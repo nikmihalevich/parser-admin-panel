@@ -8,7 +8,7 @@ import {
 const initialState = {
   our_products: {},
   data_loading: false,
-  our_products_date_last_update: null,
+  date_last_update: {},
   shops_messages: {},
   shops_data: [],
 };
@@ -33,7 +33,7 @@ export default function(state = initialState, action) {
     case SET_OUR_PRODUCTS_DATE_LAST_UPDATE:
       return {
         ...state,
-        our_products_date_last_update: action.payload,
+        date_last_update: action.payload,
       };
     default:
       return state;

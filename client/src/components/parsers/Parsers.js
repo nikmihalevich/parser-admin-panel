@@ -53,19 +53,19 @@ class Parsers extends Component {
                       </div>
                       <p>
                         Данный процесс запустит обновление списка и
-                        характеристик наших продуктов для парсинга.{" "}
+                        характеристик наших продуктов для парсинга.
                         <b>
                           Рекомендуется запускать его перед парсингом, если
                           продуктовая информация поменялась.
                         </b>
                       </p>
-                      {this.props.shops.our_products_date_last_update && (
+                      {this.props.shops.date_last_update.our_products && (
                         <>
                           <p>Дата последнего обновления:</p>
                           <p>
                             <b>
                               {new Date(
-                                this.props.shops.our_products_date_last_update
+                                this.props.shops.date_last_update.our_products
                               ).toLocaleString()}
                             </b>
                           </p>
@@ -88,6 +88,18 @@ class Parsers extends Component {
                       <h4>Перекресток</h4>
                       <hr />
                     </div>
+                    {this.props.shops.date_last_update.vprok && (
+                      <>
+                        <p>Дата последнего обновления:</p>
+                        <p>
+                          <b>
+                            {new Date(
+                              this.props.shops.date_last_update.vprok
+                            ).toLocaleString()}
+                          </b>
+                        </p>
+                      </>
+                    )}
                     <Button
                       onClick={(e) => this.onPerekrestokClick(e)}
                       loading={this.props.shops.data_loading}
@@ -102,6 +114,18 @@ class Parsers extends Component {
                       <h4>Окей</h4>
                       <hr />
                     </div>
+                    {this.props.shops.date_last_update.okey && (
+                      <>
+                        <p>Дата последнего обновления:</p>
+                        <p>
+                          <b>
+                            {new Date(
+                              this.props.shops.date_last_update.okey
+                            ).toLocaleString()}
+                          </b>
+                        </p>
+                      </>
+                    )}
                     <Button
                       onClick={(e) => this.onOkeyClick(e)}
                       loading={this.props.shops.data_loading}

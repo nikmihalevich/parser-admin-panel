@@ -54,19 +54,19 @@ export const refreshOurProducts = (userId) => (dispatch) => {
     });
 };
 
-export const getDateLastUpdateOurProducts = () => (dispatch) => {
+export const getDateLastUpdate = () => (dispatch) => {
   dispatch({
     type: SET_DATA_LOADING,
     payload: true,
   });
   axios
-    .get("/our-products/one")
+    .get("/data/lastupdate")
     .then((res) => {
-      const { product } = res.data;
+      const { lastUpdate } = res.data;
 
       dispatch({
         type: SET_OUR_PRODUCTS_DATE_LAST_UPDATE,
-        payload: product.updatedAt,
+        payload: lastUpdate,
       });
 
       dispatch({
