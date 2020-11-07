@@ -16,13 +16,10 @@ module.exports = (ourProducts, vprokProducts, okeyProducts) => {
 };
 
 const _create = async (ourProducts, vprokProducts, okeyProducts, callback) => {
-  let greatesLenght =
-    vprokProducts.length > okeyProducts.length
-      ? vprokProducts.length
-      : okeyProducts.length;
+  let greatesLength = Math.max(vprokProducts.length, okeyProducts.length);
 
   ourProducts = ourProducts.map((product, key) => {
-    for (let j = 0; j < greatesLenght; j++) {
+    for (let j = 0; j < greatesLength; j++) {
       if (
         product.product_id === vprokProducts[j].product_id &&
         vprokProducts[j]
