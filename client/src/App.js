@@ -29,7 +29,7 @@ class App extends Component {
           <div className="App">
             <Route exact path="/login" component={Login} />
             <Switch>
-              <PrivateRoute exact path="/dashboard" component={Dashboard} />
+              <PrivateRoute exact path="/" component={Dashboard} />
               <PrivateRoute exact path="/parsers" component={Parsers} />
               <PrivateRoute exact path="/table" component={ReactTables} />
             </Switch>

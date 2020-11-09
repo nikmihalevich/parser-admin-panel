@@ -43,45 +43,41 @@ class Parsers extends Component {
                   <h3>Парсеры</h3>
                 </div>
               </div>
-              <div className="row">
-                <div className="col-lg-12">
-                  <div className="col-lg-4 col-lg-offset-4 col-md-4 col-md-offset-4 col-sm-4 col-sm-offset-4 col-xs-12">
-                    <div className="custom-box">
-                      <div className="servicetitle">
-                        <h4>Наши продукты</h4>
-                        <hr />
-                      </div>
-                      <p>
-                        Данный процесс запустит обновление списка и
-                        характеристик наших продуктов для парсинга.
-                        <b>
-                          Рекомендуется запускать его перед парсингом, если
-                          продуктовая информация поменялась.
-                        </b>
-                      </p>
-                      {this.props.shops.date_last_update.our_products && (
-                        <>
-                          <p>Дата последнего обновления:</p>
-                          <p>
-                            <b>
-                              {new Date(
-                                this.props.shops.date_last_update.our_products
-                              ).toLocaleString()}
-                            </b>
-                          </p>
-                        </>
-                      )}
-                      <Button
-                        onClick={(e) => this.onOurProductsClick(e)}
-                        loading={this.props.shops.data_loading}
-                      >
-                        Обновить
-                      </Button>
+              <div className="col-lg-12">
+                <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                  <div className="custom-box">
+                    <div className="servicetitle">
+                      <h4>Наши продукты</h4>
+                      <hr />
                     </div>
+                    <p>
+                      Данный процесс запустит обновление списка и
+                      характеристик наших продуктов для парсинга.
+                      <b>
+                        Рекомендуется запускать его перед парсингом, если
+                        продуктовая информация поменялась.
+                      </b>
+                    </p>
+                    {this.props.shops.date_last_update.our_products && (
+                      <>
+                        <p>Дата последнего обновления:</p>
+                        <p>
+                          <b>
+                            {new Date(
+                              this.props.shops.date_last_update.our_products
+                            ).toLocaleString()}
+                          </b>
+                        </p>
+                      </>
+                    )}
+                    <Button
+                      onClick={(e) => this.onOurProductsClick(e)}
+                      loading={this.props.shops.data_loading}
+                    >
+                      Обновить
+                    </Button>
                   </div>
                 </div>
-              </div>
-              <div className="col-lg-12">
                 <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                   <div className="custom-box">
                     <div className="servicetitle">

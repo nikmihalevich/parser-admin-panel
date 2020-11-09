@@ -12,6 +12,9 @@ const ourProductsSchema = new Schema(
     price: {
       type: Number,
     },
+    category_name: {
+      type: String,
+    },
     params: {
       weight: {
         type: String,

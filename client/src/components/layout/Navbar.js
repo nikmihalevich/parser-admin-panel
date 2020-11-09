@@ -18,7 +18,7 @@ class Navbar extends Component {
           <div className="sidebar-toggle-box">
             <div className="fa fa-bars tooltips" data-placement="right" data-original-title="Toggle Navigation"></div>
           </div>
-          <Link to="/dashboard" className="logo"><b>Parser<span>Admin</span></b></Link>
+          <Link to="/" className="logo"><b>Parser<span>Admin</span></b></Link>
           <div className="top-menu">
             <ul className="nav pull-right top-menu">
               <li><a className="logout" href="/" onClick={e => this.onLogoutClick(e)}>Выйти</a></li>
@@ -30,7 +30,7 @@ class Navbar extends Component {
           <ul className="sidebar-menu" id="nav-accordion">
             <h5 className="centered">Admin</h5>
             <li className="mt">
-              <Link className={this.props.route === "dashboard" ? "active" : ""} to="/dashboard">
+              <Link className={this.props.route === "dashboard" ? "active" : ""} to="/">
                 <i className="fa fa-dashboard"></i>
                 <span>Информационная панель</span>
               </Link>

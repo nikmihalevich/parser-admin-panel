@@ -2,7 +2,7 @@ import {
   GET_OUR_PRODUCTS,
   SET_DATA_LOADING,
   GET_SHOPS_DATA,
-  SET_OUR_PRODUCTS_DATE_LAST_UPDATE,
+  GET_DATE_LAST_UPDATE,
 } from "../actions/types";
 
 const initialState = {
@@ -30,7 +30,7 @@ export default function(state = initialState, action) {
         ...state,
         shops_data: action.payload,
       };
-    case SET_OUR_PRODUCTS_DATE_LAST_UPDATE:
+    case GET_DATE_LAST_UPDATE:
       return {
         ...state,
         date_last_update: action.payload,

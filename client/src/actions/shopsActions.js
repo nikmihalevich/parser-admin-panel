@@ -3,7 +3,7 @@ import axios from "axios";
 import {
   GET_OUR_PRODUCTS,
   SET_DATA_LOADING,
-  SET_OUR_PRODUCTS_DATE_LAST_UPDATE,
+  GET_DATE_LAST_UPDATE,
   GET_SHOPS_DATA,
 } from "./types";
 
@@ -39,10 +39,9 @@ export const refreshOurProducts = (userId) => (dispatch) => {
   axios
     .post("/our-products/refresh", { _id: userId })
     .then((res) => {
-      dispatch({
-        type: SET_OUR_PRODUCTS_DATE_LAST_UPDATE,
-        payload: new Date().toISOString(),
-      });
+
+      dispatch(getShopsData())
+      dispatch(getDateLastUpdate())
 
       dispatch({
         type: SET_DATA_LOADING,
@@ -65,7 +64,7 @@ export const getDateLastUpdate = () => (dispatch) => {
       const { lastUpdate } = res.data;
 
       dispatch({
-        type: SET_OUR_PRODUCTS_DATE_LAST_UPDATE,
+        type: GET_DATE_LAST_UPDATE,
         payload: lastUpdate,
       });
 
@@ -111,6 +110,7 @@ export const refreshPerekrestok = (userId) => (dispatch) => {
   axios
     .post("/vprok/parse", { _id: userId })
     .then((res) => {
+      dispatch(getShopsData())
       dispatch({
         type: SET_DATA_LOADING,
         payload: false,
@@ -129,6 +129,7 @@ export const refreshOkey = (userId) => (dispatch) => {
   axios
     .post("/okey/parse", { _id: userId })
     .then((res) => {
+      dispatch(getShopsData())
       dispatch({
         type: SET_DATA_LOADING,
         payload: false,

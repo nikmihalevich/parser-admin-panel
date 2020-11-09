@@ -26,12 +26,11 @@ module.exports = (router) => {
     const vprok = await Vprok.find({}).limit(1);
     const okey = await Okey.find({}).limit(1);
 
-    console.log();
 
     let lastUpdate = {
-      our_products: ourProducts[0].updatedAt,
-      vprok: vprok[0].updatedAt,
-      okey: okey[0].updatedAt,
+      our_products: ourProducts[0] ? ourProducts[0].updatedAt : null,
+      vprok: vprok[0] ? vprok[0].updatedAt : null,
+      okey: okey[0] ? okey[0].updatedAt : null,
     };
 
     res.status(200).json({

@@ -1,6 +1,8 @@
 const OurProducts = require("../models/OurProductsModel");
 const User = require("../models/UserModel");
 const getOurProducts = require("../helpers/getOurProducts");
+const improtOurProducts = require('../helpers/improtOurProducts');
+const importOurProducts = require("../helpers/improtOurProducts");
 
 module.exports = (router) => {
   const routes = router();
@@ -38,7 +40,28 @@ module.exports = (router) => {
     });
   });
 
-  // TODO dodelat
+  routes.post("/import", async (req, res) => {
+
+    // console.log(req.body)
+
+    importOurProducts()
+
+    res.status(201).json({
+      success: true,
+      message: "Данные импортированы в БД"
+    })
+    // const user = await User.findById(_id);
+
+    // if (!user)
+    //   return res.status(401).json({
+    //     message: "У вас нет доступа к выполнению данной команды",
+    //     success: false,
+    //   });
+
+    // const result = await OurProducts.deleteMany({});
+
+    // getOurProducts();
+  });
 
   return routes;
 };

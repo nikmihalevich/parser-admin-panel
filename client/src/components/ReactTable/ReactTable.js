@@ -46,11 +46,11 @@ fuzzyTextFilterFn.autoRemove = (val) => !val;
 function Table({ columns, data }) {
   const [numberOfRows, setNumberOfRows] = React.useState({
     value: 10,
-    label: "10 rows",
+    label: "10 строк",
   });
   const [pageSelect, handlePageSelect] = React.useState({
     value: 0,
-    label: "Page 1",
+    label: "Страница 1",
   });
   const filterTypes = React.useMemo(
     () => ({
@@ -148,7 +148,7 @@ function Table({ columns, data }) {
                 options={pageSelectData.map((prop, key) => {
                   return {
                     value: key,
-                    label: "Page " + (key + 1),
+                    label: "Страница " + (key + 1),
                   };
                 })}
                 placeholder="Выберите страницу"
@@ -167,7 +167,7 @@ function Table({ columns, data }) {
                 options={numberOfRowsData.map((prop) => {
                   return {
                     value: prop,
-                    label: prop + " rows",
+                    label: prop + " строк",
                   };
                 })}
                 placeholder="Выберите строки"
@@ -239,14 +239,14 @@ function Table({ columns, data }) {
                         : "";
                     let negativePercentClass =
                       cell.column.Header === "%"
-                        ? cell.value > 0
+                        ? cell.value < 0
                           ? "color-red"
                           : ""
                         : "";
                     return (
                       <td
                         {...cell.getCellProps()}
-                        className={"rt-td" + " " + positivePercentClass}
+                        className={"rt-td" + " " + positivePercentClass + " " + negativePercentClass}
                       >
                         {cell.render("Cell")}
                         {cell.column.Header === "%" ? "%" : ""}

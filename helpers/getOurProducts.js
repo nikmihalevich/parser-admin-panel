@@ -9,6 +9,8 @@ const getOurProducts = () => {
   let productsDescription = [];
   let productsCharacteristic = [];
   let weightClassUnit = [];
+  let categoryDescription = [];
+  let productToCategory = [];
 
   function merge() {
     var result = [];
@@ -127,11 +129,57 @@ const getOurProducts = () => {
       }
 
       products = merge(productsDescription, productsCharacteristic);
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  MYSQLconnection.promise()
+    .query(
+      "SELECT category_id, name FROM " +
+        DB_PREFIX +
+        "category_description"
+    )
+    .then((res) => {
+      res[0].forEach((value, i) => {
+        categoryDescription.push(value);
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+
+  MYSQLconnection.promise()
+    .query(
+      "SELECT product_id, category_id FROM " +
+        DB_PREFIX +
+        "product_to_category"
+    )
+    .then((res) => {
+      res[0].forEach((value, i) => {
+        productToCategory.push(value)
+        
+      });
+    })
+    .then(() => {
+      products.filter((product, key) => {
+        // find by product_id object and insert category name with search in categoryDescription array by category_id
+        
+        for(let i = 0; i < productToCategory.length; i++) {
+          if(product.product_id === productToCategory[i].product_id) {
+            let catDesc = categoryDescription.find(catInfo => productToCategory[i].category_id === catInfo.category_id)
+            product.category_name = catDesc.name
+          }
+        }
+
+        return product
+      })
 
       products.map(async (item, i) => {
         const product = new OurProducts(item);
         await product.save();
       });
+      
     })
     .catch((err) => {
       console.log(err);

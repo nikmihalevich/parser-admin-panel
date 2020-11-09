@@ -20,14 +20,13 @@ const _create = async (ourProducts, vprokProducts, okeyProducts, callback) => {
 
   ourProducts = ourProducts.map((product, key) => {
     for (let j = 0; j < greatesLength; j++) {
-      if (
-        product.product_id === vprokProducts[j].product_id &&
-        vprokProducts[j]
-      )
-        product.vprok_price = vprokProducts[j].price;
+      if(vprokProducts[j])
+        if (product.product_id === vprokProducts[j].product_id)
+          product.vprok_price = vprokProducts[j].price;
 
-      if (product.product_id === okeyProducts[j].product_id && okeyProducts[j])
-        product.okey_price = okeyProducts[j].price;
+      if(okeyProducts[j])
+        if (product.product_id === okeyProducts[j].product_id)
+          product.okey_price = okeyProducts[j].price;
     }
     return product;
   });
