@@ -20,11 +20,9 @@
         "express": "^4.17.1",
         "mongoose": "^5.10.7",
         "mysql2": "^2.2.5",
+        "nodemon": "^2.0.6",
         "require-all": "^3.0.0",
         "tress": "^1.1.4",
         "underscore": "^1.11.0"
-    },
-    "devDependencies": {
-        "nodemon": "^2.0.4"
     }
 }

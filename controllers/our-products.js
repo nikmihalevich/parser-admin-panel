@@ -1,8 +1,7 @@
 const OurProducts = require("../models/OurProductsModel");
 const User = require("../models/UserModel");
 const getOurProducts = require("../helpers/getOurProducts");
-const improtOurProducts = require('../helpers/improtOurProducts');
-const importOurProducts = require("../helpers/improtOurProducts");
+const importOurProducts = require("../helpers/importOurProducts");
 
 module.exports = (router) => {
   const routes = router();
@@ -44,7 +43,7 @@ module.exports = (router) => {
 
     // console.log(req.body)
 
-    importOurProducts()
+    // importOurProducts()
 
     res.status(201).json({
       success: true,
