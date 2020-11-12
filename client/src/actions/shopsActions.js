@@ -5,6 +5,7 @@ import {
   SET_DATA_LOADING,
   GET_DATE_LAST_UPDATE,
   GET_SHOPS_DATA,
+  SET_IMPORT_OUR_PRODUCTS_MESSAGE
 } from "./types";
 
 export const getOurProducts = () => (dispatch) => {
@@ -137,5 +138,37 @@ export const refreshOkey = (userId) => (dispatch) => {
     })
     .catch((err) => {
       console.log(err);
+    });
+};
+
+export const importOurProducts = (userId, data) => (dispatch) => {
+  dispatch({
+    type: SET_DATA_LOADING,
+    payload: true,
+  });
+  axios
+    .post("/our-products/import", {_id: userId, data})
+    .then((res) => {
+      const { message } = res.data
+
+      dispatch({
+        type: SET_IMPORT_OUR_PRODUCTS_MESSAGE,
+        payload: message,
+      });
+
+      dispatch({
+        type: SET_DATA_LOADING,
+        payload: false,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
+export const setImportOurProductsMessage = (message) => (dispatch) => {
+    dispatch({
+      type: SET_IMPORT_OUR_PRODUCTS_MESSAGE,
+      payload: message,
     });
 };

@@ -3,14 +3,13 @@ import PropTypes from "prop-types";
 import { connect } from "react-redux";
 import * as FileSaver from 'file-saver';
 import * as XLSX from 'xlsx';
-import axios from "axios";
 
 // reactstrap components
 import { Button, Col } from "reactstrap";
 import Loader from "react-loader-spinner";
+import LoadingButton from "reactstrap-button-loader";
 
-
-import { getShopsData } from "../../actions/shopsActions";
+import { getShopsData, importOurProducts, setImportOurProductsMessage } from "../../actions/shopsActions";
 
 // core components
 import ReactTable from "../ReactTable/ReactTable";
@@ -21,6 +20,10 @@ class ReactTables extends React.Component {
     super(props);
     this.state = {
       data: [],
+      loading: false,
+      file: "",
+      file_error_message: "",
+      file_success_message: ""
     };
     this.hiddenFileInput = createRef()
   }
@@ -33,6 +36,10 @@ class ReactTables extends React.Component {
     setInterval(() => {
       while (!this.state.data.length) {
         this.setData();
+      }
+      if(this.props.import_message !== "") {
+        this.setState({file_success_message: this.props.import_message})
+        this.props.setImportOurProductsMessage("")
       }
     }, 1000);
   }
@@ -69,6 +76,7 @@ class ReactTables extends React.Component {
           percent: p.toFixed(2),
         };
       }),
+      loading: this.props.data_loading
     });
   }
 
@@ -122,7 +130,6 @@ class ReactTables extends React.Component {
     }
 
     return sheet
-    
   }
 
   handleButtonUploadFile = event => {
@@ -130,22 +137,31 @@ class ReactTables extends React.Component {
   }
 
   handleUploadFile = event => {
-    const fileUploaded = event.target.files[0];
+    this.decodeFile(event, (res, err) => {
+      if(err) this.setState({file_error_message: err})
+      if(!res) return
+      const { user } = this.props.auth
+      this.props.importOurProducts(user, res)
+      this.setState({file: "", file_error_message: ""})
+    })
+  }
 
+  decodeFile = (event, callback) => {
+    const fileExt = event.target.files[0].name.split('.').pop()
+    if(fileExt !== "xlsx" & fileExt !== "xls") return callback(null, "Неверный тип загружаемого файла! Только XLSX и XLS")
+
+    this.setState({file: event.target.files[0]})
     let reader = new FileReader()
-    reader.onload = function(e) {
+    reader.onloadend = function(e) {
       let bstr = e.target.result
       let wb = XLSX.read(bstr, {type: 'binary'})
       const wsname = wb.SheetNames[0];
       const ws = wb.Sheets[wsname];
       // Convert array of arrays
       const data = XLSX.utils.sheet_to_json(ws);
-
-      axios
-        .post("/our-products/import", data)
-        .then(res => console.log(res.data))
+      callback(data)
     }
-    reader.readAsBinaryString(fileUploaded);
+    this.setState({file: event.target.files[0]}, () => { reader.readAsBinaryString(this.state.file) })
   }
 
   render() {
@@ -166,19 +182,24 @@ class ReactTables extends React.Component {
                     >
                       Export
                     </Button>
-                    <Button 
+                    <LoadingButton 
                       style={{marginLeft: "10px"}}
-                      disabled={!this.state.data.length} 
+                      disabled={!this.state.data.length}
+                      loading={this.props.data_loading}
                       onClick={this.handleButtonUploadFile}
                     >
                       Import
-                    </Button>
+                    </LoadingButton>
                     <input 
                       type="file" 
                       style={{display:'none'}} 
                       ref={this.hiddenFileInput}
                       onChange={this.handleUploadFile}
+                      accept=".xlsx, .xls"
                     />
+                    &nbsp;
+                    {this.state.file_error_message}
+                    {this.state.file_success_message}
                   </h3>
                 </div>
               </div>
@@ -265,11 +286,16 @@ class ReactTables extends React.Component {
 
 ReactTables.propTypes = {
   getShopsData: PropTypes.func.isRequired,
+  importOurProducts: PropTypes.func.isRequired,
+  setImportOurProductsMessage: PropTypes.func.isRequired,
+  auth: PropTypes.object.isRequired,
 };
 
 const mapStateToProps = (state) => ({
   shops_data: state.shops.shops_data,
   data_loading: state.shops.data_loading,
+  auth: state.auth,
+  import_message: state.shops.import_our_products_message
 });
 
-export default connect(mapStateToProps, { getShopsData })(ReactTables);
+export default connect(mapStateToProps, { getShopsData, importOurProducts, setImportOurProductsMessage })(ReactTables);

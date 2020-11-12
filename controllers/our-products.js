@@ -40,26 +40,22 @@ module.exports = (router) => {
   });
 
   routes.post("/import", async (req, res) => {
+    const { _id, data } = req.body
 
-    // console.log(req.body)
+    const user = await User.findById(_id);
 
-    // importOurProducts()
+    if (!user)
+      return res.status(401).json({
+        message: "У вас нет доступа к выполнению данной команды",
+        success: false,
+      });
+    
+    let success = await importOurProducts(data)
 
     res.status(201).json({
-      success: true,
-      message: "Данные импортированы в БД"
+      success,
+      message: "Данные успешно импортированы в БД"
     })
-    // const user = await User.findById(_id);
-
-    // if (!user)
-    //   return res.status(401).json({
-    //     message: "У вас нет доступа к выполнению данной команды",
-    //     success: false,
-    //   });
-
-    // const result = await OurProducts.deleteMany({});
-
-    // getOurProducts();
   });
 
   return routes;

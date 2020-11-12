@@ -1,5 +1,4 @@
 const mysql = require("mysql2");
-const { product } = require("puppeteer");
 
 const DB_PREFIX = process.env.MYSQLDBPREFIX ? process.env.MYSQLDBPREFIX : "oc_";
 
@@ -60,7 +59,7 @@ const importData = [
 const MYSQLconnection = mysql.createConnection({
 	host: process.env.MYSQLHOST ? process.env.MYSQLHOST : "localhost",
 	user: process.env.MYSQLUSER ? process.env.MYSQLUSER : "root",
-	password: process.env.MYSQLPASS ? process.env.MYSQLPASS : "root",
+	password: process.env.MYSQLPASS ? process.env.MYSQLPASS : "",
 	database: process.env.MYSQLDB ? process.env.MYSQLDB : "testopencart",
 });
 
@@ -89,17 +88,20 @@ const addBrand = async (name, callback) => {
 
 const checkBrand = (product) => {
 	return new Promise(async (resolve) => {
+		if(product._BRAND_) {
+			let res = await MYSQLconnection.promise()
+			.query(
+					"SELECT manufacturer_id as brand_id FROM " + DB_PREFIX + "manufacturer WHERE " + 
+					DB_PREFIX + "manufacturer.name = '" + product._BRAND_.trim() + "'"
+				)
 
-		let res = await MYSQLconnection.promise()
-		.query(
-				"SELECT manufacturer_id as brand_id FROM " + DB_PREFIX + "manufacturer WHERE " + 
-				DB_PREFIX + "manufacturer.name = '" + product._BRAND_ + "'"
-			)
-
-		if(res[0].length === 0)
-			addBrand(product._BRAND_, resolve)
-		else
+			if(res[0].length === 0)
+				addBrand(product._BRAND_, resolve)
+			else
+				resolve()
+		} else {
 			resolve()
+		}
 
 	})
 }
@@ -112,7 +114,7 @@ const getPrice = (price) => {
 const addProduct = async (product, callback) => {
 	let res
 	let date = new Date().toMysqlFormat()
-	let price = getPrice(product._PRICE_)
+	let price = product._PRICE_
 	let brand_id = 0
 
 	brand_id = await MYSQLconnection.promise()
@@ -123,15 +125,8 @@ const addProduct = async (product, callback) => {
 	
 	if(brand_id[0].length > 0)
 		brand_id = brand_id[0][0].brand_id
-
-	
-	let category_name = product._CATEGORY_.split('|')
-	category_name = category_name[category_name.length-1]
-	let category_id = await MYSQLconnection.promise()
-		.query(
-				"SELECT category_id FROM " + DB_PREFIX + "category_description WHERE " + 
-				DB_PREFIX + "category_description.name = '" + category_name + "'"
-			)
+	else
+		brand_id = 0
 
 	let id = await MYSQLconnection.promise().query("SELECT MAX(product_id) AS max_id FROM " + DB_PREFIX + "product")
 	id = id[0][0].max_id + 1
@@ -156,39 +151,50 @@ const addProduct = async (product, callback) => {
 			"INSERT INTO " + DB_PREFIX + "product_to_layout (product_id, store_id, layout_id) VALUES (" + id + ", 0, 0)"
 		)
 
-	if(category_id[0].length > 0) {
-		category_id = category_id[0][0].category_id
 
-		res = await MYSQLconnection.promise()
+	if(product._CATEGORY_) {
+		let category_name = product._CATEGORY_.split('|')
+		category_name = category_name[category_name.length-1].trim()
+		let category_id = await MYSQLconnection.promise()
 			.query(
-				"INSERT INTO " + DB_PREFIX + "product_to_category (product_id, category_id) VALUES (" + id + ", " + category_id + ")"
-			)
+					"SELECT category_id FROM " + DB_PREFIX + "category_description WHERE " + 
+					DB_PREFIX + "category_description.name = '" + category_name + "'"
+				)
+
+		if(category_id[0].length > 0) {
+			category_id = category_id[0][0].category_id
+	
+			res = await MYSQLconnection.promise()
+				.query(
+					"INSERT INTO " + DB_PREFIX + "product_to_category (product_id, category_id) VALUES (" + id + ", " + category_id + ")"
+				)
+		}
 	}
+	
 
 	callback()
 }
 
 const checkProduct = async (product) => {
 	return new Promise(async(resolve) => {
-		let price = getPrice(product._PRICE_)
+		let price = product._PRICE_
+		let quantity = product._QUANTITY_
 		let res = await MYSQLconnection.promise()
 			.query(
 					"UPDATE " + 
-					DB_PREFIX + "product SET price=" + price + " WHERE " + 
+					DB_PREFIX + "product SET price=" + price + ", quantity="+quantity+" WHERE " + 
 					DB_PREFIX + "product.product_id = (SELECT " + 
 					DB_PREFIX + "product_description.product_id FROM " + 
 					DB_PREFIX + "product_description WHERE " + 
 					DB_PREFIX + "product_description.name = '" + product._NAME_ + "')"
 				)
 		
-		if(res[0].changedRows !== undefined) {
-			console.log("Changed rows: ", res[0].changedRows) // work with this value - if < 0 INSERT new product
-			resolve()	
-		}
-		else if(res[0].changedRows === undefined) {
+		if(res[0].changedRows !== undefined)
+			return resolve()	
+		else if(res[0].changedRows === undefined)
 			addProduct(product, resolve)
-		}
-
+		
+		return resolve()
 	})
 }
 
@@ -217,16 +223,15 @@ const addCategory = (name, parent_id) => {
 			.query(
 					"INSERT INTO " + DB_PREFIX + "category_to_store (category_id, store_id) VALUES (" + id + ", 0)"
 				)
-		console.log("RESOLVING ID: ", id)
 
 		resolve(id)
-
 	})
 
 }
 
 const checkCategory = (product) => {
 	return new Promise(async (resolve) => {
+		if(!product._CATEGORY_) return resolve()
 		let catergories = product._CATEGORY_.split('|')
 
 		if(catergories.length === 0) resolve()
@@ -256,15 +261,17 @@ const checkCategory = (product) => {
 }
 
 const importOurProducts = async (data) => {
-
-	for(let i = 0; i < importData.length; i++) {
-		// await checkBrand(importData[i])
-		// await checkProduct(importData[i])
-		await checkCategory(importData[i])
-	}
-
-	MYSQLconnection.end();
+	return new Promise(async(resolve) => {
+		for(let i = 0; i < data.length; i++) {
+			await checkBrand(data[i])
+			await checkCategory(data[i])
+			await checkProduct(data[i])
+		}
+	
+		
+		// MYSQLconnection.end();
+		resolve(true)
+	})
 }
 
-// importOurProducts()
-//module.exports = importOurProducts
+module.exports = importOurProducts
