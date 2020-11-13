@@ -39,6 +39,7 @@ module.exports = (router) => {
     });
   });
 
+  // takes 'data' (array of objects) 
   routes.post("/import", async (req, res) => {
     const { _id, data } = req.body
 
@@ -50,11 +51,11 @@ module.exports = (router) => {
         success: false,
       });
     
-    let success = await importOurProducts(data)
+    let result = await importOurProducts(data)
 
     res.status(201).json({
-      success,
-      message: "Данные успешно импортированы в БД"
+      success: result.success,
+      message: result.message
     })
   });
 

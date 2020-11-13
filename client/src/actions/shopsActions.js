@@ -163,6 +163,16 @@ export const importOurProducts = (userId, data) => (dispatch) => {
     })
     .catch((err) => {
       console.log(err);
+
+      dispatch({
+        type: SET_IMPORT_OUR_PRODUCTS_MESSAGE,
+        payload: "Ошибка сервера",
+      });
+
+      dispatch({
+        type: SET_DATA_LOADING,
+        payload: false,
+      });
     });
 };
 
