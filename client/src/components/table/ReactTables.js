@@ -66,7 +66,7 @@ class ReactTables extends React.Component {
         return {
           id: key + 1,
           category: prop.category_name,
-          name: prop.name + " " + prop.params.weight + " " + prop.params.unit,
+          name: prop.name + " " + (prop.params.weight !== "0" ? prop.params.weight : "") + " " + (prop.params.unit ? prop.params.unit : ""),
           product_id: prop.product_id,
           our_price: prop.price,
           vprok_price: vprok,

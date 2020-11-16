@@ -6,7 +6,7 @@ class Database {
         mongoose.connection.on("open", () => {
             console.log("> DB Connected...");
         });
-        mongoose.connection.on("error", () => {
+        mongoose.connection.on("error", (e) => {
             console.error(e);
         });
 
