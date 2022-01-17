@@ -16,17 +16,20 @@ const parsePerekData = async (html, product, callback) => {
   let $ = cheerio.load(html);
 
   let productNameTemplate =
-    product.name + " " + product.params.weight + product.params.unit;
-  let productNameTemplateArr = productNameTemplate.toLowerCase().split(" ");
+    product.name //+ " " + product.params.weight + product.params.unit;
+  let productNameTemplateDirtArr = productNameTemplate.trim().toLowerCase().split(" ");
+  let productNameTemplateArr = underscore.without(productNameTemplateDirtArr, '')
+  
   let productNameTemplateArrLength = productNameTemplateArr.length;
   let productPrice;
   let productWeight = 0;
 
   $(".js-catalog-product").each(async (i, elem) => {
     let productTitle = $(elem).find(".js-product__title").attr("title");
+    
     let productTitleArray = [];
 
-    productTitleArray = productTitle.toLowerCase().split(" ");
+    productTitleArray = productTitle.trim().toLowerCase().split(" ");
 
     productWeight = parseFloat(
       productTitleArray[productTitleArray.length - 1].match(/\d.(\d+)/)
@@ -38,13 +41,13 @@ const parsePerekData = async (html, product, callback) => {
       productWeight = productWeight.toString();
     }
 
-    if (productWeight !== product.params.weight) return;
+    // if (productWeight !== product.params.weight) return;
 
     if (
       underscore.intersection(productTitleArray, productNameTemplateArr)
         .length >=
       productNameTemplateArrLength - 1
-    ) {
+    ) { // underscore.intersection(productTitleArray, productNameTemplateArr).length >= productNameTemplateArrLength - 1
       productPrice = parseFloat(
         $(elem).find(".js-product__cost").attr("data-cost")
       );
@@ -61,6 +64,7 @@ const parsePerekData = async (html, product, callback) => {
 
     let vprok = await new Vprok(result);
     await vprok.save();
+
   });
 
   callback(null, "done");

@@ -240,7 +240,7 @@ const addCategory = (name, parent_id, level) => {
 			return resolve(id)
 		} catch(err) {
 			console.error(err)
-		} 
+		}
 	})
 
 }

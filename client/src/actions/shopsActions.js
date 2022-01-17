@@ -5,7 +5,8 @@ import {
   SET_DATA_LOADING,
   GET_DATE_LAST_UPDATE,
   GET_SHOPS_DATA,
-  SET_IMPORT_OUR_PRODUCTS_MESSAGE
+  SET_IMPORT_OUR_PRODUCTS_MESSAGE,
+  SET_UPDATE_OUR_PRODUCTS_PRICES_MESSAGE
 } from "./types";
 
 export const getOurProducts = () => (dispatch) => {
@@ -179,6 +180,48 @@ export const importOurProducts = (userId, data) => (dispatch) => {
 export const setImportOurProductsMessage = (message) => (dispatch) => {
     dispatch({
       type: SET_IMPORT_OUR_PRODUCTS_MESSAGE,
+      payload: message,
+    });
+};
+
+export const updateOurProductsPrices = (userId, data) => (dispatch) => {
+  dispatch({
+    type: SET_DATA_LOADING,
+    payload: true,
+  });
+  axios
+    .post("/our-products/updatePrices", { _id: userId, data })
+    .then((res) => {
+      const { message } = res.data
+
+      dispatch({
+        type: SET_UPDATE_OUR_PRODUCTS_PRICES_MESSAGE,
+        payload: message,
+      });
+
+      dispatch({
+        type: SET_DATA_LOADING,
+        payload: false,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+
+      dispatch({
+        type: SET_UPDATE_OUR_PRODUCTS_PRICES_MESSAGE,
+        payload: "Ошибка сервера",
+      });
+
+      dispatch({
+        type: SET_DATA_LOADING,
+        payload: false,
+      });
+    });
+};
+
+export const updateOurProductsPricesMessage = (message) => (dispatch) => {
+    dispatch({
+      type: SET_UPDATE_OUR_PRODUCTS_PRICES_MESSAGE,
       payload: message,
     });
 };

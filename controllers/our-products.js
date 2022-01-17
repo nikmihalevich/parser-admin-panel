@@ -2,6 +2,7 @@ const OurProducts = require("../models/OurProductsModel");
 const User = require("../models/UserModel");
 const getOurProducts = require("../helpers/getOurProducts");
 const importOurProducts = require("../helpers/importOurProducts");
+const updateOurProductsPrice = require("../helpers/updateOurProductsPrice");
 
 module.exports = (router) => {
   const routes = router();
@@ -59,5 +60,25 @@ module.exports = (router) => {
     })
   });
 
+  // update our product prices into MySQL DB by average calculated price from other shops  
+  routes.post("/updatePrices", async (req, res) => {
+    const { _id, data } = req.body
+
+    const user = await User.findById(_id);
+
+    if (!user)
+      return res.status(401).json({
+        message: "У вас нет доступа к выполнению данной команды",
+        success: false,
+      });
+    
+    let result = await updateOurProductsPrice(data)
+
+    res.status(201).json({
+      success: result.success,
+      message: result.message
+    })
+  });
+ 
   return routes;
 };

@@ -3,7 +3,8 @@ import {
   SET_DATA_LOADING,
   GET_SHOPS_DATA,
   GET_DATE_LAST_UPDATE,
-  SET_IMPORT_OUR_PRODUCTS_MESSAGE
+  SET_IMPORT_OUR_PRODUCTS_MESSAGE,
+  SET_UPDATE_OUR_PRODUCTS_PRICES_MESSAGE
 } from "../actions/types";
 
 const initialState = {
@@ -12,7 +13,8 @@ const initialState = {
   date_last_update: {},
   shops_messages: {},
   shops_data: [],
-  import_our_products_message: ""
+  import_our_products_message: "",
+  update_our_products_prices_message: "",
 };
 
 export default function(state = initialState, action) {
@@ -41,6 +43,11 @@ export default function(state = initialState, action) {
       return {
         ...state,
         import_our_products_message: action.payload,
+      };
+    case SET_UPDATE_OUR_PRODUCTS_PRICES_MESSAGE:
+      return {
+        ...state,
+        update_our_products_prices_message: action.payload,
       };
     default:
       return state;

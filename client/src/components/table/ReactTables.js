@@ -9,7 +9,7 @@ import { Button, Col } from "reactstrap";
 import Loader from "react-loader-spinner";
 import LoadingButton from "reactstrap-button-loader";
 
-import { getShopsData, importOurProducts, setImportOurProductsMessage } from "../../actions/shopsActions";
+import { getShopsData, importOurProducts, setImportOurProductsMessage, updateOurProductsPrices, updateOurProductsPricesMessage } from "../../actions/shopsActions";
 
 // core components
 import ReactTable from "../ReactTable/ReactTable";
@@ -29,19 +29,16 @@ class ReactTables extends React.Component {
   }
 
   componentWillMount() {
+    this.setState({
+      loading: true
+    })
     this.setData();
   }
 
   componentDidMount() {
-    setInterval(() => {
-      while (!this.state.data.length) {
-        this.setData();
-      }
-      if(this.props.import_message !== "") {
-        this.setState({file_success_message: this.props.import_message})
-        this.props.setImportOurProductsMessage("")
-      }
-    }, 1000);
+    this.setState({
+      loading: false
+    })
   }
 
   componentWillUnmount() {
@@ -71,9 +68,8 @@ class ReactTables extends React.Component {
           our_price: prop.price,
           vprok_price: vprok,
           okey_price: okey,
-          // dixy_price: dixy,
-          average_price: ap.toFixed(2),
-          percent: p.toFixed(2),
+          average_price: parseFloat(ap.toFixed(2)),
+          percent: parseFloat(p.toFixed(2)),
         };
       }),
       loading: this.props.data_loading
@@ -91,7 +87,6 @@ class ReactTables extends React.Component {
   };
 
   exportToCSV = (csvData, fileName) => {
-
     const fileType = 'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;charset=UTF-8';
     const fileExtension = '.xlsx';
 
@@ -164,6 +159,11 @@ class ReactTables extends React.Component {
     this.setState({file: event.target.files[0]}, () => { reader.readAsBinaryString(this.state.file) })
   }
 
+  updatePrices = () => {
+    const { user } = this.props.auth
+    this.props.updateOurProductsPrices(user, this.state.data)
+  }
+
   render() {
     return (
       <>
@@ -200,11 +200,22 @@ class ReactTables extends React.Component {
                     &nbsp;
                     {this.state.file_error_message}
                     {this.state.file_success_message}
+                    &nbsp;
+                    <LoadingButton 
+                      style={{marginLeft: "10px"}}
+                      disabled={!this.state.data.length}
+                      loading={this.props.data_loading}
+                      onClick={this.updatePrices}
+                    >
+                      Обновить цены
+                    </LoadingButton>
+                    &nbsp;
+                    {this.props.update_price_message}
                   </h3>
                 </div>
               </div>
               <Col lg="12">
-                {!this.state.data.length ? (
+                {this.state.loading ? (
                   <div
                     style={{
                       display: "flex",
@@ -288,6 +299,8 @@ ReactTables.propTypes = {
   getShopsData: PropTypes.func.isRequired,
   importOurProducts: PropTypes.func.isRequired,
   setImportOurProductsMessage: PropTypes.func.isRequired,
+  updateOurProductsPrices: PropTypes.func.isRequired,
+  updateOurProductsPricesMessage: PropTypes.func.isRequired,
   auth: PropTypes.object.isRequired,
 };
 
@@ -295,7 +308,8 @@ const mapStateToProps = (state) => ({
   shops_data: state.shops.shops_data,
   data_loading: state.shops.data_loading,
   auth: state.auth,
-  import_message: state.shops.import_our_products_message
+  import_message: state.shops.import_our_products_message,
+  update_price_message: state.shops.update_our_products_prices_message
 });
 
-export default connect(mapStateToProps, { getShopsData, importOurProducts, setImportOurProductsMessage })(ReactTables);
+export default connect(mapStateToProps, { getShopsData, importOurProducts, setImportOurProductsMessage, updateOurProductsPrices, updateOurProductsPricesMessage })(ReactTables);
