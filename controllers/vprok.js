@@ -36,7 +36,7 @@ module.exports = (router) => {
   });
 
   routes.post("/parse", async (req, res) => {
-    const { _id } = req.body;
+    const { _id, percent } = req.body;
 
     const user = await User.findById(_id);
 
@@ -50,7 +50,7 @@ module.exports = (router) => {
 
     await Vprok.deleteMany({});
 
-    await vprokParser(ourProducts);
+    await vprokParser(ourProducts, percent);
 
     const vprokProducts = await Vprok.find({});
 

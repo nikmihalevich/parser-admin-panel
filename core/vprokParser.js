@@ -8,10 +8,10 @@ const Vprok = require("../models/VprokModel");
 let results = [];
 
 const q = tress((job, callback) => {
-  Perekrestok(job.URL, job.product, callback);
+  Perekrestok(job.URL, job.product, job.percent, callback);
 }, 10);
 
-const parsePerekData = async (html, product, callback) => {
+const parsePerekData = async (html, product, percent, callback) => {
   // парсим DOM
   let $ = cheerio.load(html);
 
@@ -26,7 +26,7 @@ const parsePerekData = async (html, product, callback) => {
 
   $(".js-catalog-product").each(async (i, elem) => {
     let productTitle = $(elem).find(".js-product__title").attr("title");
-    
+
     let productTitleArray = [];
 
     productTitleArray = productTitle.trim().toLowerCase().split(" ");
@@ -47,13 +47,17 @@ const parsePerekData = async (html, product, callback) => {
       underscore.intersection(productTitleArray, productNameTemplateArr)
         .length >=
       productNameTemplateArrLength - 1
-    ) { // underscore.intersection(productTitleArray, productNameTemplateArr).length >= productNameTemplateArrLength - 1
+    ) {
       productPrice = parseFloat(
         $(elem).find(".js-product__cost").attr("data-cost")
       );
     }
 
     if (!productPrice) return;
+
+    let comparePercent = ((productPrice / product.price) * 100) - 100
+
+    if(Math.abs(comparePercent) > percent) return;
 
     let result = {
       product_id: product.product_id,
@@ -70,11 +74,11 @@ const parsePerekData = async (html, product, callback) => {
   callback(null, "done");
 };
 
-const Perekrestok = (url, product, callback) => {
-  axios.get(url).then((res) => parsePerekData(res.data, product, callback));
+const Perekrestok = (url, product, percent, callback) => {
+  axios.get(url).then((res) => parsePerekData(res.data, product, percent, callback));
 };
 
-module.exports = async (products, cb) => {
+module.exports = async (products, percent, cb) => {
   return new Promise((resolve, reject) => {
     q.drain = () => {
       resolve();
@@ -84,7 +88,7 @@ module.exports = async (products, cb) => {
         "https://www.vprok.ru/catalog/search?text=" +
           products[i].name.toLowerCase()
       );
-      q.push({ URL, product: products[i] });
+      q.push({ URL, product: products[i], percent });
     }
   });
 };

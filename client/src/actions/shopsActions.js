@@ -104,13 +104,13 @@ export const getShopsData = () => (dispatch) => {
     });
 };
 
-export const refreshPerekrestok = (userId) => (dispatch) => {
+export const refreshPerekrestok = (userId, percent) => (dispatch) => {
   dispatch({
     type: SET_DATA_LOADING,
     payload: true,
   });
   axios
-    .post("/vprok/parse", { _id: userId })
+    .post("/vprok/parse", { _id: userId, percent })
     .then((res) => {
       dispatch(getShopsData())
       dispatch({

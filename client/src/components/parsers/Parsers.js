@@ -12,7 +12,18 @@ import {
 
 import Navbar from "../layout/Navbar";
 
+let perekrestokPercent;
+
 class Parsers extends Component {
+  // constructor(props) {
+  //   super(props);
+  //   this.state = {
+  //       perekrestokPercent: ""
+  //   };
+  // }
+
+  
+
   onOurProductsClick = (e) => {
     e.preventDefault();
     const { user } = this.props.auth;
@@ -22,7 +33,7 @@ class Parsers extends Component {
   onPerekrestokClick = (e) => {
     e.preventDefault();
     const { user } = this.props.auth;
-    this.props.refreshPerekrestok(user);
+    this.props.refreshPerekrestok(user, perekrestokPercent);
   };
 
   onOkeyClick = (e) => {
@@ -96,6 +107,11 @@ class Parsers extends Component {
                         </p>
                       </>
                     )}
+                    <input 
+                      type="text" 
+                      placeholder="Процент +-"
+                      onChange={(e) => perekrestokPercent = e.target.value}
+                    />
                     <Button
                       onClick={(e) => this.onPerekrestokClick(e)}
                       loading={this.props.shops.data_loading}
