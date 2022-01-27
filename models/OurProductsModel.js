@@ -12,6 +12,9 @@ const ourProductsSchema = new Schema(
     price: {
       type: Number,
     },
+    deviant_percent: {
+      type: Number,
+    },
     category_name: {
       type: String,
     },

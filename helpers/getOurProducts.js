@@ -86,11 +86,28 @@ const getOurProducts = () => {
       console.log(err);
     });
 
+  // let sqlQuery
+
+  // MYSQLconnection.promise()
+  //   .query(
+  //     "SHOW TABLES LIKE '" + DB_PREFIX + "product_parser_info'"
+  //   )
+  //   .then((res) => {
+  //     if(res[0].length) {
+  //       sqlQuery = "SELECT p.product_id AS product_id, p.price AS price, p.weight AS weight, p.weight_class_id AS weight_class_id, ppi.percent AS deviant_percent FROM " + DB_PREFIX + "product p LEFT JOIN " + DB_PREFIX + "product_parser_info ppi ON (p.product_id = ppi.product_id)"
+  //     } else {
+  //       sqlQuery = "SELECT product_id, price, weight, weight_class_id FROM " + DB_PREFIX + "product"
+  //     }
+  //   })
+  //   .catch((err) => {
+  //     console.log(err);
+  //   }); 
+
+  // console.log(sqlQuery)
+
   MYSQLconnection.promise()
     .query(
-      "SELECT product_id, price, weight, weight_class_id FROM " +
-        DB_PREFIX +
-        "product"
+      "SELECT p.product_id AS product_id, p.price AS price, p.weight AS weight, p.weight_class_id AS weight_class_id, ppi.percent AS deviant_percent FROM " + DB_PREFIX + "product p LEFT JOIN " + DB_PREFIX + "product_parser_info ppi ON (p.product_id = ppi.product_id)"
     )
     .then((res) => {
       res[0].forEach((value, i) => {
@@ -105,6 +122,7 @@ const getOurProducts = () => {
         productsCharacteristic.push({
           product_id: value.product_id,
           price: parseFloat(value.price).toFixed(2),
+          deviant_percent: value.deviant_percent ? parseInt(value.deviant_percent) : 0,
           params: params,
         });
       });
@@ -133,6 +151,27 @@ const getOurProducts = () => {
     .catch((err) => {
       console.log(err);
     });
+
+    // MYSQLconnection.promise()
+    // .query(
+    //   "SELECT product_id, percent FROM " +
+    //     DB_PREFIX +
+    //     "product_parser_info"
+    // )
+    // .then(() => {
+    //   res[0].forEach((value, i) => {
+        
+    //     productsCharacteristic.push({
+    //       product_id: value.product_id,
+    //       deviant_percent: parseInt(value.percent),
+    //     });
+    //   });
+
+
+    // })
+    // .catch((err) => {
+    //   console.log(err);
+    // });
 
   MYSQLconnection.promise()
     .query(

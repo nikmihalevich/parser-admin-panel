@@ -28,17 +28,8 @@ class ReactTables extends React.Component {
     this.hiddenFileInput = createRef()
   }
 
-  componentWillMount() {
-    this.setState({
-      loading: true
-    })
-    this.setData();
-  }
-
   componentDidMount() {
-    this.setState({
-      loading: false
-    })
+    this.setData()
   }
 
   componentWillUnmount() {

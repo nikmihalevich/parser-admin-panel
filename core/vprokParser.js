@@ -43,10 +43,16 @@ const parsePerekData = async (html, product, percent, callback) => {
 
     // if (productWeight !== product.params.weight) return;
 
+    // console.log(productTitleArray)
+    // console.log(productNameTemplateArr)
+    // console.log(underscore.intersection(productTitleArray, productNameTemplateArr).length)
+    // console.log(productNameTemplateArrLength-1)
+    // console.log(" ")
+
     if (
       underscore.intersection(productTitleArray, productNameTemplateArr)
         .length >=
-      productNameTemplateArrLength - 1
+      productNameTemplateArrLength - 2
     ) {
       productPrice = parseFloat(
         $(elem).find(".js-product__cost").attr("data-cost")
@@ -57,7 +63,17 @@ const parsePerekData = async (html, product, percent, callback) => {
 
     let comparePercent = ((productPrice / product.price) * 100) - 100
 
-    if(Math.abs(comparePercent) > percent) return;
+    // if(percent) {
+    //   if(Math.abs(comparePercent) > percent) return;
+    // }
+
+    if(product.deviant_percent) {
+      if(Math.abs(comparePercent) > product.deviant_percent) return;
+    } else {
+      if(percent) {
+        if(Math.abs(comparePercent) > percent) return;
+      }
+    }
 
     let result = {
       product_id: product.product_id,
