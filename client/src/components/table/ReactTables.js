@@ -59,6 +59,7 @@ class ReactTables extends React.Component {
           our_price: prop.price,
           vprok_price: vprok,
           okey_price: okey,
+          dixy_price: dixy,
           average_price: parseFloat(ap.toFixed(2)),
           percent: parseFloat(p.toFixed(2)),
         };
@@ -258,11 +259,11 @@ class ReactTables extends React.Component {
                         accessor: "okey_price",
                         filterable: false,
                       },
-                      // {
-                      //   Header: "Цена в Диксе",
-                      //   accessor: "dixy_price",
-                      //   filterable: false,
-                      // },
+                      {
+                        Header: "Цена в Диксе",
+                        accessor: "dixy_price",
+                        filterable: false,
+                      },
                       {
                         Header: "Средняя цена",
                         accessor: "average_price",

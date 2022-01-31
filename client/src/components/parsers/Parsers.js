@@ -8,11 +8,13 @@ import {
   refreshOurProducts,
   refreshPerekrestok,
   refreshOkey,
+  refreshDixy
 } from "../../actions/shopsActions";
 
 import Navbar from "../layout/Navbar";
 
 let perekrestokPercent;
+let dixyPercent;
 
 class Parsers extends Component {
   // constructor(props) {
@@ -42,6 +44,12 @@ class Parsers extends Component {
     this.props.refreshOkey(user);
   };
 
+  onDixyClick = (e) => {
+    e.preventDefault();
+    const { user } = this.props.auth;
+    this.props.refreshDixy(user, dixyPercent);
+  };
+
   render() {
     return (
       <>
@@ -55,7 +63,9 @@ class Parsers extends Component {
                 </div>
               </div>
               <div className="col-lg-12">
-                <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+              <div className="row">
+
+              <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                   <div className="custom-box">
                     <div className="servicetitle">
                       <h4>Наши продукты</h4>
@@ -146,20 +156,27 @@ class Parsers extends Component {
                     </Button>
                   </div>
                 </div>
-                {/* <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
+                </div>
+                <div className="col-lg-4 col-md-4 col-sm-4 col-xs-12">
                   <div className="custom-box">
                     <div className="servicetitle">
                       <h4>Дикси</h4>
                       <hr />
                     </div>
+                    <input 
+                      type="text" 
+                      placeholder="Процент +-"
+                      onChange={(e) => dixyPercent = e.target.value}
+                    />
                     <Button
-                      onClick={(e) => console.log("Dixy clicked!")}
+                      onClick={(e) => this.onDixyClick(e)}
                       loading={this.props.shops.data_loading}
                     >
                       Парсить
                     </Button>
                   </div>
-                </div> */}
+                </div>
+
               </div>
             </div>
           </section>
@@ -173,6 +190,7 @@ Parsers.propTypes = {
   refreshOurProducts: PropTypes.func.isRequired,
   refreshPerekrestok: PropTypes.func.isRequired,
   refreshOkey: PropTypes.func.isRequired,
+  refreshDixy: PropTypes.func.isRequired,
 };
 
 const mapStateToProps = (state) => ({
@@ -184,4 +202,5 @@ export default connect(mapStateToProps, {
   refreshOurProducts,
   refreshPerekrestok,
   refreshOkey,
+  refreshDixy,
 })(Parsers);

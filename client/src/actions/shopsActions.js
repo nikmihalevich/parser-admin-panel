@@ -142,6 +142,25 @@ export const refreshOkey = (userId) => (dispatch) => {
     });
 };
 
+export const refreshDixy = (userId) => (dispatch) => {
+  dispatch({
+    type: SET_DATA_LOADING,
+    payload: true,
+  });
+  axios
+    .post("/dixy/parse", { _id: userId })
+    .then((res) => {
+      dispatch(getShopsData())
+      dispatch({
+        type: SET_DATA_LOADING,
+        payload: false,
+      });
+    })
+    .catch((err) => {
+      console.log(err);
+    });
+};
+
 export const importOurProducts = (userId, data) => (dispatch) => {
   dispatch({
     type: SET_DATA_LOADING,
