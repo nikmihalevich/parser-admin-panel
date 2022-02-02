@@ -43,12 +43,6 @@ const parsePerekData = async (html, product, percent, callback) => {
 
     // if (productWeight !== product.params.weight) return;
 
-    // console.log(productTitleArray)
-    // console.log(productNameTemplateArr)
-    // console.log(underscore.intersection(productTitleArray, productNameTemplateArr).length)
-    // console.log(productNameTemplateArrLength-1)
-    // console.log(" ")
-
     if (
       underscore.intersection(productTitleArray, productNameTemplateArr)
         .length >=
@@ -63,10 +57,6 @@ const parsePerekData = async (html, product, percent, callback) => {
 
     let comparePercent = ((productPrice / product.price) * 100) - 100
 
-    // if(percent) {
-    //   if(Math.abs(comparePercent) > percent) return;
-    // }
-
     if(product.deviant_percent) {
       if(Math.abs(comparePercent) > product.deviant_percent) return;
     } else {
@@ -80,11 +70,16 @@ const parsePerekData = async (html, product, percent, callback) => {
       price: productPrice,
     };
 
-    results.push(result);
+    let same = results.some(function(e) {
+      return e.product_id == result.product_id
+    })
 
-    let vprok = await new Vprok(result);
-    await vprok.save();
-
+    if(!same) {
+      results.push(result);
+    
+      let vprok = await new Vprok(result);
+      await vprok.save();
+    }
   });
 
   callback(null, "done");

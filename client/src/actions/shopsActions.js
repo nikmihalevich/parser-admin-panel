@@ -142,13 +142,13 @@ export const refreshOkey = (userId) => (dispatch) => {
     });
 };
 
-export const refreshDixy = (userId) => (dispatch) => {
+export const refreshDixy = (userId, percent) => (dispatch) => {
   dispatch({
     type: SET_DATA_LOADING,
     payload: true,
   });
   axios
-    .post("/dixy/parse", { _id: userId })
+    .post("/dixy/parse", { _id: userId, percent })
     .then((res) => {
       dispatch(getShopsData())
       dispatch({

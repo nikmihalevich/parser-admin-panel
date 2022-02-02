@@ -110,6 +110,8 @@ class ReactTables extends React.Component {
         sheet[key].v = "Цена в Перекрестке"
       else if(sheet[key].v === "okey_price")
         sheet[key].v = "Цена в Окее"
+      else if(sheet[key].v === "dixy_price")
+        sheet[key].v = "Цена в Дикси"
       else if(sheet[key].v === "average_price")
         sheet[key].v = "Средняя цена"
       else if(sheet[key].v === "percent")

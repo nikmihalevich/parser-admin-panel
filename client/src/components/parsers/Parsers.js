@@ -17,14 +17,12 @@ let perekrestokPercent;
 let dixyPercent;
 
 class Parsers extends Component {
-  // constructor(props) {
-  //   super(props);
-  //   this.state = {
-  //       perekrestokPercent: ""
-  //   };
-  // }
-
-  
+  constructor(props) {
+    super(props);
+    
+    perekrestokPercent = 0;
+    dixyPercent = 0;
+  }
 
   onOurProductsClick = (e) => {
     e.preventDefault();
@@ -163,6 +161,18 @@ class Parsers extends Component {
                       <h4>Дикси</h4>
                       <hr />
                     </div>
+                    {this.props.shops.date_last_update.dixy && (
+                      <>
+                        <p>Дата последнего обновления:</p>
+                        <p>
+                          <b>
+                            {new Date(
+                              this.props.shops.date_last_update.dixy
+                            ).toLocaleString()}
+                          </b>
+                        </p>
+                      </>
+                    )}
                     <input 
                       type="text" 
                       placeholder="Процент +-"

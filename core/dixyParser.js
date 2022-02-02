@@ -26,7 +26,6 @@ const parseDixyData = async (html, product, percent, callback) => {
 
   $(".catalog_item_wrapp").each(async (i, elem) => {
     let productTitle = $(elem).find(".item-title").find('span').text();
-    console.log('product title: ' + productTitle)
 
     let productTitleArray = [];
 
@@ -44,23 +43,15 @@ const parseDixyData = async (html, product, percent, callback) => {
 
     // if (productWeight !== product.params.weight) return;
 
-    // console.log(productTitleArray)
-    // console.log(productNameTemplateArr)
-    // console.log(underscore.intersection(productTitleArray, productNameTemplateArr).length)
-    // console.log(productNameTemplateArrLength-1)
-    // console.log(" ")
-
     if (
       underscore.intersection(productTitleArray, productNameTemplateArr)
         .length >=
       productNameTemplateArrLength - 2
     ) {
       productPrice = parseFloat(
-        $(elem).find(".price_value").text()
+        $(elem).find("span.price_value").text()
       );
     }
-
-    console.log('product price: ' + productPrice)
 
     if (!productPrice) return;
 
@@ -83,11 +74,16 @@ const parseDixyData = async (html, product, percent, callback) => {
       price: productPrice,
     };
 
-    results.push(result);
+    let same = results.some(function(e) {
+      return e.product_id == result.product_id
+    })
 
-    let dixy = await new DixyModel(result);
-    await dixy.save();
+    if(!same) {
+      results.push(result);
 
+      let dixy = await new DixyModel(result);
+      await dixy.save();
+    }
   });
 
   callback(null, "done");
